@@ -2,11 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ProductCodeAlreadyExists, ProductNotFound } from './errors';
 
 @Injectable()
 export class ProductService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createProductDto: CreateProductDto) {
+    const productExists = await this.prismaService.product.findFirst({
+      where: {
+        code: createProductDto.code,
+      },
+    });
+
+    if (productExists) throw new ProductCodeAlreadyExists();
+
     return this.prismaService.product.create({
       data: createProductDto,
     });
@@ -17,14 +26,28 @@ export class ProductService {
   }
 
   async findOne(id: number) {
-    return await this.prismaService.product.findFirst({
+    const product = await this.prismaService.product.findFirst({
       where: {
         id: id,
       },
     });
+    if (!product) throw new ProductNotFound();
+
+    return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    if (updateProductDto.code) {
+      const product = await this.prismaService.product.findFirst({
+        where: {
+          code: updateProductDto.code,
+        },
+      });
+      if (product && product.id !== id) {
+        throw new ProductCodeAlreadyExists();
+      }
+    }
+
     return this.prismaService.product.update({
       where: {
         id: id,
