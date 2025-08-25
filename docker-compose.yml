@@ -1,0 +1,18 @@
+
+
+services:
+  productsrest-db:
+    image: postgres:15
+    container_name: ProductsRest
+    restart: always
+    environment:
+      POSTGRES_DB: productsrest
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - productsrest_data:/var/lib/postgresql/data
+
+volumes:
+  productsrest_data:
