@@ -6,25 +6,38 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class ProductService {
   constructor(private readonly prismaService: PrismaService) {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto) {
+    return this.prismaService.product.create({
+      data: createProductDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    return await this.prismaService.product.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.prismaService.product.findFirst({
+      where: {
+        id: id,
+      },
+    });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+    return this.prismaService.product.update({
+      where: {
+        id: id,
+      },
+      data: updateProductDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    await this.prismaService.product.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 }
