@@ -3,6 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductCodeAlreadyExists, ProductNotFound } from './errors';
+import { ProductQueryDto } from './dto/product-query-dto';
 
 @Injectable()
 export class ProductService {
@@ -21,8 +22,15 @@ export class ProductService {
     });
   }
 
-  async findAll() {
-    return await this.prismaService.product.findMany();
+  async findAll(dto: ProductQueryDto) {
+    const { name, page = 1, size = 15 } = dto;
+
+    console.log(dto);
+    return await this.prismaService.product.findMany({
+      where: name ? { name: { contains: name } } : {},
+      skip: (page - 1) * size,
+      take: size,
+    });
   }
 
   async findOne(id: number) {

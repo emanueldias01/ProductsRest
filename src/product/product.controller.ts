@@ -8,10 +8,12 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import * as productQueryDto from './dto/product-query-dto';
 
 @Controller('product')
 export class ProductController {
@@ -24,8 +26,8 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query() query: productQueryDto.ProductQueryDto) {
+    return this.productService.findAll(query);
   }
 
   @Get(':id')
