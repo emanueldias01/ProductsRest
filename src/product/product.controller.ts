@@ -18,10 +18,10 @@ import * as productQueryDto from './dto/product-query-dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('product')
-@UseGuards(AuthGuard)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
@@ -38,11 +38,13 @@ export class ProductController {
     return this.productService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {

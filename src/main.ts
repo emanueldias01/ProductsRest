@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(
     new ProductAlreadyExistFilter(),
-    new ProductAlreadyExistFilter(),
+    new ProductNotFoundErrorFilter(),
     new UnauthorizedExceptionFilter()
   );
   app.useGlobalPipes(
