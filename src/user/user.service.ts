@@ -19,7 +19,6 @@ export class UserService implements OnModuleInit {
           username: 'admin',
           password:
             hashSync("admin", 10),
-          role: "ADMIN"
         },
       });
     }
