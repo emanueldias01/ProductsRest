@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductCodeAlreadyExists, ProductNotFound } from './errors';
 import { ProductQueryDto } from './dto/product-query-dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Injectable()
 export class ProductService {
   constructor(private readonly prismaService: PrismaService) {}
@@ -24,8 +26,6 @@ export class ProductService {
 
   async findAll(dto: ProductQueryDto) {
     const { name, page = 1, size = 15 } = dto;
-
-    console.log(dto);
     return await this.prismaService.product.findMany({
       where: name ? { name: { contains: name } } : {},
       skip: (page - 1) * size,
